@@ -111,5 +111,121 @@
     <origin xyz="${-caster_xoff} 0.0 ${-(base_height/2)}" rpy="0 0 0"/>
   </joint>
 
+  <!-- ////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////// -->
+  
+  <!-- ArUco Marker 0 -->
+  <link name="aruco_marker_0_link">
+    <visual>
+      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <geometry>
+        <box size="0.09 0.09 0.001"/>
+      </geometry>
+      <material name="Aruco0">
+        <!-- color for RVIZ-->
+        <color rgba="1 1 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <geometry>
+        <box size="0.09 0.09 0.001"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="base_to_aruco_marker_0" type="fixed">
+    <parent link="base_link"/>
+    <child link="aruco_marker_0_link"/>
+    <origin xyz="0.1 0 ${(base_height)/2}" rpy="0 0 -1.5709"/>
+  </joint>
+
+  <!-- ArUco Marker 1 -->
+  <link name="aruco_marker_1_link">
+    <visual>
+      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <geometry>
+        <box size="0.09 0.09 0.001"/>
+      </geometry>
+      <material name="Aruco1">
+        <!-- color for RVIZ-->
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <geometry>
+        <box size="0.09 0.09 0.001"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="base_to_aruco_marker_1" type="fixed">
+    <parent link="base_link"/>
+    <child link="aruco_marker_1_link"/>
+    <origin xyz="0 0.1 ${(base_height)/2}" rpy="0 0 -1.5709"/>
+  </joint>
+
+  <!-- ArUco Marker 2 -->
+  <link name="aruco_marker_2_link">
+    <visual>
+      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <geometry>
+        <box size="0.09 0.09 0.001"/>
+      </geometry>
+      <material name="Aruco2">
+        <!-- color for RVIZ-->
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <geometry>
+        <box size="0.09 0.09 0.001"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="base_to_aruco_marker_2" type="fixed">
+    <parent link="base_link"/>
+    <child link="aruco_marker_2_link"/>
+    <origin xyz="-0.1 0 ${(base_height)/2}" rpy="0 0 -1.5709"/>
+  </joint>
+
+  <!-- ArUco Marker 3 -->
+  <link name="aruco_marker_3_link">
+    <visual>
+      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <geometry>
+        <box size="0.09 0.09 0.001"/>
+      </geometry>
+      <material name="Aruco3">
+        <!-- color for RVIZ-->
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <geometry>
+        <box size="0.09 0.09 0.001"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="base_to_aruco_marker_3" type="fixed">
+    <parent link="base_link"/>
+    <child link="aruco_marker_3_link"/>
+    <origin xyz="0 -0.1 ${(base_height)/2}" rpy="0 0 -1.5709"/>
+  </joint>
 
 </robot>

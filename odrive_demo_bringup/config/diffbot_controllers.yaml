@@ -16,6 +16,7 @@ diffbot_base_controller:
     right_wheel_names: ["drivewhl_r_joint"]
 
     # wheel_separation: 0.10
+    #NEED TO FIND THIS PROPERLY!!!!
     wheel_separation: 0.51
 
     #wheels_per_side: 1  # actually 2, but both are controlled by 1 signal
