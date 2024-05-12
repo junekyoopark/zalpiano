@@ -12,7 +12,7 @@
 
   <xacro:include filename="$(find odrive_demo_description)/urdf/odrive.ros2_control.xacro" />
 
-  <xacro:diffbot prefix="$(arg prefix)" />
+  <!-- <xacro:diffbot prefix="$(arg prefix)" /> -->
 
   <!-- <xacro:odrive_ros2_control
     name="ODriveDiffBot"
