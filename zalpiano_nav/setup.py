@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'zalpiano_keyboard_control = zalpiano_nav.zalpiano_keyboard_control:main'
         ],
     },
 )
