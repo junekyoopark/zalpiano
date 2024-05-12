@@ -9,7 +9,9 @@
 
   <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
-  <exec_depend>ros2_control_demo_description</exec_depend>
+  <!-- <exec_depend>ros2_control_demo_description</exec_depend> -->
+  <exec_depend>zalpiano_desc</exec_depend>
+
 
   <export>
     <build_type>ament_cmake</build_type>

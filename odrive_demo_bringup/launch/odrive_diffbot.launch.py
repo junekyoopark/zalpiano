@@ -42,11 +42,19 @@ def generate_launch_description():
         ]
     )
 
+    # rviz_config_file = PathJoinSubstitution(
+    #     [
+    #         FindPackageShare("diffbot_description"),
+    #         "config",
+    #         "diffbot.rviz"
+    #     ]
+    # )
+
     rviz_config_file = PathJoinSubstitution(
         [
-            FindPackageShare("diffbot_description"),
-            "config",
-            "diffbot.rviz"
+            FindPackageShare("zalpiano_desc"),
+            "rviz",
+            "urdf_config.rviz"
         ]
     )
 
