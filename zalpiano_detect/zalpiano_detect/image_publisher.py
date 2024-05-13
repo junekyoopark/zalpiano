@@ -16,12 +16,11 @@ class CameraPublisher(Node):
         )
         self.publisher = self.create_publisher(Image, '/camera/image_raw', qos_profile)
         # Attempt to open the camera using the MJPEG format
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
         self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        # Set a higher frame rate, e.g., 30 FPS
-        self.cap.set(cv2.CAP_PROP_FPS, 30)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.cap.set(cv2.CAP_PROP_FPS, 100)
         
         if not self.cap.isOpened():
             raise IOError("Cannot open webcam")
