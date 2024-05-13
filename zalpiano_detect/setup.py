@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 import os
 from glob import glob
 
-package_name = 'zalpiano_nav'
+package_name = 'zalpiano_detect'
 
 setup(
     name=package_name,
@@ -17,13 +17,15 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='john',
-    maintainer_email='john@todo.todo',
+    maintainer_email='junekyoopark@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'zalpiano_keyboard_control = zalpiano_nav.zalpiano_keyboard_control:main',
+            'aruco_detect = zalpiano_detect.aruco_detect:main',
+            'aruco_to_center = zalpiano_detect.aruco_to_center:main',
+            'image_publisher = zalpiano_detect.image_publisher:main',
         ],
     },
 )

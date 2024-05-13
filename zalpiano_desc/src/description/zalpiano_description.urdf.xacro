@@ -228,4 +228,45 @@
     <origin xyz="0 -0.1 ${(base_height)/2}" rpy="0 0 -1.5709"/>
   </joint>
 
+  <!-- ////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////// -->
+
+  <link name="aruco_center_link0">
+  </link>
+
+  <joint name="center_to_aruco_marker_0" type="fixed">
+    <parent link="base_link"/>
+    <child link="aruco_center_link0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="aruco_center_link1">
+  </link>
+
+  <joint name="center_to_aruco_marker_1" type="fixed">
+    <parent link="base_link"/>
+    <child link="aruco_center_link1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="aruco_center_link2">
+  </link>
+
+  <joint name="center_to_aruco_marker_2" type="fixed">
+    <parent link="base_link"/>
+    <child link="aruco_center_link2"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="aruco_center_link3">
+  </link>
+
+  <joint name="center_to_aruco_marker_3" type="fixed">
+    <parent link="base_link"/>
+    <child link="aruco_center_link3"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
 </robot>
