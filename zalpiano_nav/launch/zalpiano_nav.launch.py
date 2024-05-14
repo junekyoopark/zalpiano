@@ -58,6 +58,14 @@ def generate_launch_description():
         ]
     )
 
+    ekf_aruco_config_file = PathJoinSubstitution(
+        [
+            FindPackageShare("zalpiano_desc"),
+            "config",
+            "ekf_aruco.yaml"
+        ]
+    )
+
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -91,12 +99,20 @@ def generate_launch_description():
         arguments=["-d", rviz_config_file],
     )
 
+
+    robot_localization_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='aruco_ekf_filter_node',
+        output='screen',
+        parameters=[ekf_aruco_config_file, {'use_sim_time': False}]
+    )
+    
     return LaunchDescription([
         control_node,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
         robot_controller_spawner,
         rviz_node,
-        aruco_detect,
-        aruco_to_center,
+        robot_localization_node,
     ])
