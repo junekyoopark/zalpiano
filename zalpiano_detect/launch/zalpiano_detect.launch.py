@@ -41,5 +41,5 @@ def generate_launch_description():
     return LaunchDescription([
         aruco_detect_node,
         aruco_to_center_node,
-        image_publisher_node,
+        # image_publisher_node,
     ])

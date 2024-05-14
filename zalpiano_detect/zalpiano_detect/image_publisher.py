@@ -11,15 +11,15 @@ class CameraPublisher(Node):
         # Define the QoS profile
         qos_profile = QoSProfile(
             history=QoSHistoryPolicy.KEEP_LAST,
-            depth=10,
+            depth=5,
             reliability=QoSReliabilityPolicy.BEST_EFFORT
         )
         self.publisher = self.create_publisher(Image, '/camera/image_raw', qos_profile)
         # Attempt to open the camera using the MJPEG format
-        self.cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
+        self.cap = cv2.VideoCapture(2, cv2.CAP_V4L2)
         self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 800)
         self.cap.set(cv2.CAP_PROP_FPS, 100)
         
         if not self.cap.isOpened():

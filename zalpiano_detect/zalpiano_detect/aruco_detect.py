@@ -29,23 +29,11 @@ cx, cy = W / 2, H / 2
 k1, k2, p1, p2, k3 = -0.25, 0.12, -0.00028, -0.00005, 0.0
 
 # Known Z depth
-constant_z = 4.0  # Assuming a constant Z value for the demonstration
+constant_z = 3.20  # Assuming a constant Z value for the demonstration
 
 class ArUcoDetector(Node):
     def __init__(self):
         super().__init__('aruco_detector')
-        qos_profile = QoSProfile(
-            history=QoSHistoryPolicy.KEEP_LAST,
-            depth=10,
-            reliability=QoSReliabilityPolicy.BEST_EFFORT  # Ensure this matches the publisher
-        )
-        self.subscription = self.create_subscription(
-            Image,
-            '/camera/image_raw',
-            self.image_callback,
-            qos_profile
-        )
-        self.bridge = CvBridge()
         self.aruco_dict = aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
         self.aruco_params = aruco.DetectorParameters_create()
 
@@ -54,6 +42,15 @@ class ArUcoDetector(Node):
                                        [0, 0, 1]])
         self.dist_coeffs = np.array([k1, k2, p1, p2, k3])
 
+        # Initialize the camera with specific settings
+        self.cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
+        self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 800)
+        self.cap.set(cv2.CAP_PROP_FPS, 100)
+
+        self.bridge = CvBridge()
+        
         # Pose publisher for each marker ID
         self.pose_publishers = {}
         for marker_id in range(4):  # IDs 0 to 3
@@ -61,7 +58,9 @@ class ArUcoDetector(Node):
             publisher = self.create_publisher(PoseWithCovarianceStamped, topic_name, 10)
             self.pose_publishers[marker_id] = publisher
 
-        
+        # Create a timer to process frames at a fixed interval (e.g., 10 Hz)
+        # Needed for rclpy spin
+        self.timer = self.create_timer(0.01, self.process_frames)
 
     def image_point_to_world(self, x, y):
         """
@@ -71,49 +70,52 @@ class ArUcoDetector(Node):
         Y = -((y - cy) * constant_z / fy)
         return X, Y, constant_z
 
-    def image_callback(self, msg):
-        frame = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
-        # frame_undistorted = cv2.undistort(frame, self.camera_matrix, self.dist_coeffs)
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, self.aruco_dict, parameters=self.aruco_params)
+    def process_frames(self):
+        while True:
+            ret, frame = self.cap.read()
+            if not ret:
+                continue
+            
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, self.aruco_dict, parameters=self.aruco_params)
 
-        if ids is not None:
-            for i, marker_id in enumerate(ids.flatten()):
-                if 0 <= marker_id <= 3:  # Check if the marker ID is between 0 and 3
-                    corner = corners[i]
-                    aruco.drawDetectedMarkers(frame, [corner])
+            if ids is not None:
+                for i, marker_id in enumerate(ids.flatten()):
+                    if 0 <= marker_id <= 3:  # Check if the marker ID is between 0 and 3
+                        corner = corners[i]
+                        aruco.drawDetectedMarkers(frame, [corner])
 
-                    c = corner[0]
-                    center = c.mean(axis=0)
-                    X, Y, Z = self.image_point_to_world(center[0], center[1])
+                        c = corner[0]
+                        center = c.mean(axis=0)
+                        X, Y, Z = self.image_point_to_world(center[0], center[1])
 
-                    vector = c[1] - c[0]
-                    angle = np.arctan2(vector[1], vector[0])
-                    cy = np.cos(angle * 0.5)
-                    sy = np.sin(angle * 0.5)
+                        vector = c[1] - c[0]
+                        angle = np.arctan2(vector[1], vector[0])
+                        cy = np.cos(angle * 0.5)
+                        sy = np.sin(angle * 0.5)
 
-                    pose_cov_msg = PoseWithCovarianceStamped()
-                    pose_cov_msg.header.stamp = self.get_clock().now().to_msg()
-                    pose_cov_msg.header.frame_id = "map"
-                    pose_cov_msg.pose.pose.position.x = X
-                    pose_cov_msg.pose.pose.position.y = Y
-                    pose_cov_msg.pose.pose.position.z = Z # Adjust Z as before
-                    pose_cov_msg.pose.pose.orientation.x = 0.0
-                    pose_cov_msg.pose.pose.orientation.y = 0.0
-                    pose_cov_msg.pose.pose.orientation.z = -cy
-                    pose_cov_msg.pose.pose.orientation.w = -sy
+                        pose_cov_msg = PoseWithCovarianceStamped()
+                        pose_cov_msg.header.stamp = self.get_clock().now().to_msg()
+                        pose_cov_msg.header.frame_id = "map"
+                        pose_cov_msg.pose.pose.position.x = X
+                        pose_cov_msg.pose.pose.position.y = Y
+                        pose_cov_msg.pose.pose.position.z = Z # Adjust Z as before
+                        pose_cov_msg.pose.pose.orientation.x = 0.0
+                        pose_cov_msg.pose.pose.orientation.y = 0.0
+                        pose_cov_msg.pose.pose.orientation.z = -cy
+                        pose_cov_msg.pose.pose.orientation.w = -sy
 
-                    pose_cov_msg.pose.covariance = [0.0] * 36  # Initialize covariance as zero (adjust as needed)
+                        pose_cov_msg.pose.covariance = [0.0] * 36  # Initialize covariance as zero (adjust as needed)
 
-                    if marker_id in self.pose_publishers:
-                        self.pose_publishers[marker_id].publish(pose_cov_msg)
+                        if marker_id in self.pose_publishers:
+                            self.pose_publishers[marker_id].publish(pose_cov_msg)
 
-                    position_text = f"3D Pos: ({X:.2f}, {Y:.2f}, {cy:.2f})"
-                    cv2.putText(frame, position_text, (int(center[0] + 20), int(center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
+                        position_text = f"3D Pos: ({X:.2f}, {Y:.2f}, {cy:.2f})"
+                        cv2.putText(frame, position_text, (int(center[0] + 20), int(center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
 
-        cv2.imshow("ArUco Marker Detection and 3D Position", frame)
-        cv2.waitKey(1)
-
+            cv2.imshow("ArUco Marker Detection and 3D Position", frame)
+            cv2.waitKey(1) 
+    
 def main(args=None):
     rclpy.init(args=args)
     aruco_detector = ArUcoDetector()
