@@ -29,7 +29,7 @@ cx, cy = W / 2, H / 2
 k1, k2, p1, p2, k3 = -0.25, 0.12, -0.00028, -0.00005, 0.0
 
 # Known Z depth
-constant_z = 3.20  # Assuming a constant Z value for the demonstration
+constant_z = 2.00  # Assuming a constant Z value for the demonstration
 
 class ArUcoDetector(Node):
     def __init__(self):
@@ -90,7 +90,7 @@ class ArUcoDetector(Node):
                         X, Y, Z = self.image_point_to_world(center[0], center[1])
 
                         vector = c[1] - c[0]
-                        angle = np.arctan2(vector[1], vector[0])
+                        angle = np.arctan2(vector[0], vector[1])
                         cy = np.cos(angle * 0.5)
                         sy = np.sin(angle * 0.5)
 

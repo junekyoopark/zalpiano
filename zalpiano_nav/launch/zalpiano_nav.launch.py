@@ -60,9 +60,17 @@ def generate_launch_description():
 
     ekf_aruco_config_file = PathJoinSubstitution(
         [
-            FindPackageShare("zalpiano_desc"),
+            FindPackageShare("zalpiano_nav"),
             "config",
             "ekf_aruco.yaml"
+        ]
+    )
+
+    ekf_encoder_config_file = PathJoinSubstitution(
+        [
+            FindPackageShare("zalpiano_nav"),
+            "config",
+            "ekf_encoder.yaml"
         ]
     )
 
@@ -100,19 +108,28 @@ def generate_launch_description():
     )
 
 
-    robot_localization_node = Node(
+    robot_localization_node_aruco = Node(
         package='robot_localization',
         executable='ekf_node',
         name='aruco_ekf_filter_node',
         output='screen',
         parameters=[ekf_aruco_config_file, {'use_sim_time': False}]
     )
-    
+
+    robot_localization_node_encoder = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='encoder_ekf_filter_node',
+        output='screen',
+        parameters=[ekf_aruco_config_file, {'use_sim_time': False}]
+    )
+
     return LaunchDescription([
         control_node,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
         robot_controller_spawner,
         rviz_node,
-        robot_localization_node,
+        robot_localization_node_aruco,
+        robot_localization_node_encoder,
     ])

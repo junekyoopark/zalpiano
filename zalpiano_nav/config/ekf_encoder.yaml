@@ -1,5 +1,5 @@
 ### ekf config file ###
-aruco_ekf_filter_node:
+encoder_ekf_filter_node:
     ros__parameters:
 # The frequency, in Hz, at which the filter will output a position estimate. Note that the filter will not begin
 # computation until it receives at least one message from one of theinputs. It will then run continuously at the
@@ -30,39 +30,11 @@ aruco_ekf_filter_node:
         map_frame: map              # Defaults to "map" if unspecified
         odom_frame: odom            # Defaults to "odom" if unspecified
         base_link_frame: base_link  # Defaults to "base_link" ifunspecified
-        world_frame: map           # Defaults to the value ofodom_frame if unspecified
+        world_frame: odom           # Defaults to the value ofodom_frame if unspecified
 
-        pose0: /aruco_center_0
-        pose0_config: [true,  true,  false,
-                       false, false, true,
+        odom0: /zalpiano_base_controller/odom
+        odom0_config: [true,  true,  true,
+                       true, true, true,
                        false, false, false,
                        false, false, false,
                        false, false, false]
-        
-        pose1: /aruco_center_1
-        pose1_config: [true,  true,  false,
-                       false, false, true,
-                       false, false, false,
-                       false, false, false,
-                       false, false, false]
-                
-        pose2: /aruco_center_2
-        pose2_config: [true,  true,  false,
-                       false, false, true,
-                       false, false, false,
-                       false, false, false,
-                       false, false, false]
-
-        pose3: /aruco_center_3
-        pose0_config: [true,  true,  false,
-                       false, false, true,
-                       false, false, false,
-                       false, false, false,
-                       false, false, false]        
-
-        # imu0: demo/imu
-        # imu0_config: [false, false, false,
-        #               true,  true,  true,
-        #               false, false, false,
-        #               false, false, false,
-        #               false, false, false]

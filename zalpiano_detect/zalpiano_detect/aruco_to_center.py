@@ -16,7 +16,7 @@ class ArucoTransformer(Node):
 
         # Initialize subscriptions list
         self._subscriptions = []  # If this causes an error, it should be visible now
-        self._publishers = []
+        self.marker_publishers = {}
         rclpy.logging.get_logger('ArucoTransformer').info("Subscriptions and Publishers initialized")
 
         self.tf_broadcaster = tf2_ros.TransformBroadcaster(self)
@@ -32,14 +32,15 @@ class ArucoTransformer(Node):
             rclpy.logging.get_logger('ArucoTransformer').info(f"Subscribed to {topic_name}")
 
             publisher = self.create_publisher(PoseWithCovarianceStamped, f'/aruco_center_{marker_id}', 10)
-            self._publishers[marker_id] = publisher
-            rclpy.logging.get_logger('ArucoTransformer').info(f"Publisher created for /aruco_center_{marker_id}")
+            self.marker_publishers[marker_id] = publisher
+            self.get_logger().info(f"Publisher created for /aruco_center_{marker_id}")
 
     def handle_pose(self, msg, marker_id):
         transform = TransformStamped()
         transform.header.stamp = self.get_clock().now().to_msg()
         transform.header.frame_id = 'base_link'
         transform.child_frame_id = f'aruco_center_link{marker_id}'
+        # transform.child_frame_id = f'aruco_marker_{marker_id}_link'
         transform.transform.translation.x = msg.pose.pose.position.x
         transform.transform.translation.y = msg.pose.pose.position.y
         transform.transform.translation.z = msg.pose.pose.position.z
@@ -47,7 +48,7 @@ class ArucoTransformer(Node):
         self.tf_broadcaster.sendTransform(transform)
 
         # Publish the pose to the corresponding topic
-        self._publishers[marker_id].publish(msg)
+        self.marker_publishers[marker_id].publish(msg)
 
 
 def main(args=None):
