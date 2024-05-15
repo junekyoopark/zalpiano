@@ -1,17 +1,3 @@
-# Copyright 2022 Factor Robotics
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from launch import LaunchDescription
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch_ros.actions import Node
@@ -116,20 +102,11 @@ def generate_launch_description():
         parameters=[ekf_aruco_config_file, {'use_sim_time': False}]
     )
 
-    robot_localization_node_encoder = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='encoder_ekf_filter_node',
-        output='screen',
-        parameters=[ekf_aruco_config_file, {'use_sim_time': False}]
-    )
-
     return LaunchDescription([
         control_node,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
         robot_controller_spawner,
-        rviz_node,
+        # rviz_node,
         robot_localization_node_aruco,
-        robot_localization_node_encoder,
     ])

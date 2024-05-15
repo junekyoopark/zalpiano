@@ -15,7 +15,7 @@ class KeyboardControlNode(Node):
             depth=1
         )
         self.publisher = self.create_publisher(Twist, '/zalpiano_base_controller/cmd_vel_unstamped', qos_profile)
-        self.timer = self.create_timer(0.1, self.timer_callback)  # Timer frequency could be adjusted for responsiveness
+        self.timer = self.create_timer(0.01, self.timer_callback)  # Timer frequency could be adjusted for responsiveness
         self.get_logger().info('Keyboard Control Node has started.')
 
     def timer_callback(self):

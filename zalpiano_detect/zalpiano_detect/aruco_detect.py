@@ -43,7 +43,7 @@ class ArUcoDetector(Node):
         self.dist_coeffs = np.array([k1, k2, p1, p2, k3])
 
         # Initialize the camera with specific settings
-        self.cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
+        self.cap = cv2.VideoCapture(2, cv2.CAP_V4L2)
         self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 800)
@@ -97,13 +97,13 @@ class ArUcoDetector(Node):
                         pose_cov_msg = PoseWithCovarianceStamped()
                         pose_cov_msg.header.stamp = self.get_clock().now().to_msg()
                         pose_cov_msg.header.frame_id = "map"
-                        pose_cov_msg.pose.pose.position.x = X
-                        pose_cov_msg.pose.pose.position.y = Y
+                        pose_cov_msg.pose.pose.position.x = -X
+                        pose_cov_msg.pose.pose.position.y = -Y
                         pose_cov_msg.pose.pose.position.z = Z # Adjust Z as before
                         pose_cov_msg.pose.pose.orientation.x = 0.0
                         pose_cov_msg.pose.pose.orientation.y = 0.0
                         pose_cov_msg.pose.pose.orientation.z = -cy
-                        pose_cov_msg.pose.pose.orientation.w = -sy
+                        pose_cov_msg.pose.pose.orientation.w = sy
 
                         pose_cov_msg.pose.covariance = [0.0] * 36  # Initialize covariance as zero (adjust as needed)
 

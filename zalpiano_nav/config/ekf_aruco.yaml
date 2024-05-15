@@ -58,7 +58,14 @@ aruco_ekf_filter_node:
                        false, false, true,
                        false, false, false,
                        false, false, false,
-                       false, false, false]        
+                       false, false, false]    
+
+        odom0: /zalpiano_base_controller/odom
+        odom0_config: [true,  true,  false,
+                       true, true, true,
+                       false, false, false,
+                       false, false, false,
+                       false, false, false]
 
         # imu0: demo/imu
         # imu0_config: [false, false, false,
