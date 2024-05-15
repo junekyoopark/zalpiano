@@ -26,7 +26,7 @@ zalpiano_base_controller:
     
     #set one of these to a negative value to change direction
     #set them to 0.1 for a gear ratio of 1:10
-    left_wheel_radius_multiplier: 1.0
+    left_wheel_radius_multiplier: -1.0
     right_wheel_radius_multiplier: 1.0
 
     publish_rate: 100.0
