@@ -2,13 +2,16 @@ from launch import LaunchDescription
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-import launch_ros
-import os
 
 
 def generate_launch_description():
-    pkg_share = launch_ros.substitutions.FindPackageShare(package='zalpiano_nav').find('zalpiano_nav')
-    map_file_path = os.path.join(pkg_share, 'map/map.yaml')
+    map_file_path = PathJoinSubstitution(
+        [
+            FindPackageShare("zalpiano_nav"),
+            "map",
+            "map.yaml"
+        ]
+    )
 
     rviz_config_file = PathJoinSubstitution(
         [
@@ -18,6 +21,13 @@ def generate_launch_description():
         ]
     )
 
+    twist_mux_params = PathJoinSubstitution(
+        [
+            FindPackageShare("zalpiano_nav"),
+            "config",
+            "twist_mux.yaml"
+        ]
+    )
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
@@ -26,7 +36,7 @@ def generate_launch_description():
     )
 
     # Nav2 Map Server Node
-    map_server_node = launch_ros.actions.Node(
+    map_server_node = Node(
         package='nav2_map_server',
         executable='map_server',
         name='map_server',
@@ -50,9 +60,17 @@ def generate_launch_description():
         name="aruco_to_center",
     )
 
+    twist_mux_node = Node(
+        package="twist_mux",
+        executable="twist_mux",
+        parameters=[twist_mux_params, {'use_sim_time': False}],
+        remappings=[('/cmd_vel_out', '/zalpiano_base_controller/cmd_vel_unstamped')]
+    )
+
     return LaunchDescription([
         aruco_detect_node,
         aruco_to_center_node,
         rviz_node,
         map_server_node,
+        twist_mux_node,
     ])
