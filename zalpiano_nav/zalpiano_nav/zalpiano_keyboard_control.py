@@ -42,6 +42,8 @@ class KeyboardControlNode(Node):
             self.publisher.publish(msg)
             self.get_logger().info(f'Published: {msg}')
         elif key == ord(' '):  # Spacebar for e-stop
+            msg.linear.x = 0.0
+            msg.angular.z = 0.0
             self.e_stop_publisher.publish(msg)
             self.get_logger().info('Emergency Stop Published')
         elif key == ord('q'):
