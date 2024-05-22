@@ -119,7 +119,7 @@
   <!-- ArUco Marker 0 -->
   <link name="aruco_marker_0_link">
     <visual>
-      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.001"/>
       </geometry>
@@ -130,7 +130,7 @@
     </visual>
 
     <collision>
-      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.001"/>
       </geometry>
@@ -141,13 +141,13 @@
   <joint name="base_to_aruco_marker_0" type="fixed">
     <parent link="base_link"/>
     <child link="aruco_marker_0_link"/>
-    <origin xyz="0.15 0 ${(base_height)/2}" rpy="0 0 -1.5709"/>
+    <origin xyz="0.185 0 ${(base_height)/2}" rpy="0 0 0"/>
   </joint>
 
   <!-- ArUco Marker 1 -->
   <link name="aruco_marker_1_link">
     <visual>
-      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.001"/>
       </geometry>
@@ -158,7 +158,7 @@
     </visual>
 
     <collision>
-      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.001"/>
       </geometry>
@@ -169,13 +169,13 @@
   <joint name="base_to_aruco_marker_1" type="fixed">
     <parent link="base_link"/>
     <child link="aruco_marker_1_link"/>
-    <origin xyz="0 0.15 ${(base_height)/2}" rpy="0 0 -1.5709"/>
+    <origin xyz="0 0.185 ${(base_height)/2}" rpy="0 0 0"/>
   </joint>
 
   <!-- ArUco Marker 2 -->
   <link name="aruco_marker_2_link">
     <visual>
-      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.001"/>
       </geometry>
@@ -186,7 +186,7 @@
     </visual>
 
     <collision>
-      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.001"/>
       </geometry>
@@ -197,13 +197,13 @@
   <joint name="base_to_aruco_marker_2" type="fixed">
     <parent link="base_link"/>
     <child link="aruco_marker_2_link"/>
-    <origin xyz="-0.15 0 ${(base_height)/2}" rpy="0 0 -1.5709"/>
+    <origin xyz="-0.185 0 ${(base_height)/2}" rpy="0 0 0"/>
   </joint>
 
   <!-- ArUco Marker 3 -->
   <link name="aruco_marker_3_link">
     <visual>
-      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.001"/>
       </geometry>
@@ -214,7 +214,7 @@
     </visual>
 
     <collision>
-      <origin xyz="0 0 0.001" rpy="0 0 -1.5709"/>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
       <geometry>
         <box size="0.1 0.1 0.001"/>
       </geometry>
@@ -225,7 +225,7 @@
   <joint name="base_to_aruco_marker_3" type="fixed">
     <parent link="base_link"/>
     <child link="aruco_marker_3_link"/>
-    <origin xyz="0 -0.15 ${(base_height)/2}" rpy="0 0 -1.5709"/>
+    <origin xyz="0 -0.185 ${(base_height)/2}" rpy="0 0 0"/>
   </joint>
 
   <!-- ////////////////////////////////////////////////////// -->
@@ -239,7 +239,7 @@
   <joint name="center_to_aruco_marker_0" type="fixed">
     <parent link="base_link"/>
     <child link="aruco_center_link0"/>
-    <origin xyz="0 0 0" rpy="0 0 -1.5709"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
   <link name="aruco_center_link1">
@@ -248,7 +248,7 @@
   <joint name="center_to_aruco_marker_1" type="fixed">
     <parent link="base_link"/>
     <child link="aruco_center_link1"/>
-    <origin xyz="0 0 0" rpy="0 0 -1.5709"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
   <link name="aruco_center_link2">
@@ -257,7 +257,7 @@
   <joint name="center_to_aruco_marker_2" type="fixed">
     <parent link="base_link"/>
     <child link="aruco_center_link2"/>
-    <origin xyz="0 0 0" rpy="0 0 -1.5709"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
   <link name="aruco_center_link3">
@@ -266,7 +266,7 @@
   <joint name="center_to_aruco_marker_3" type="fixed">
     <parent link="base_link"/>
     <child link="aruco_center_link3"/>
-    <origin xyz="0 0 0" rpy="0 0 -1.5709"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
 </robot>
