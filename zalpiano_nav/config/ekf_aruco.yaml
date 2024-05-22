@@ -54,7 +54,7 @@ aruco_ekf_filter_node:
                        false, false, false]
 
         pose3: /aruco_center_3
-        pose0_config: [true,  true,  false,
+        pose3_config: [true,  true,  false,
                        false, false, true,
                        false, false, false,
                        false, false, false,
