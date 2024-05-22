@@ -39,8 +39,8 @@ class ArucoTransformer(Node):
         transform = TransformStamped()
         transform.header.stamp = self.get_clock().now().to_msg()
         transform.header.frame_id = 'base_link'
+        # transform.header.frame_id = f'aruco_marker_{marker_id}_link'
         transform.child_frame_id = f'aruco_center_link{marker_id}'
-        # transform.child_frame_id = f'aruco_marker_{marker_id}_link'
         transform.transform.translation.x = msg.pose.pose.position.x
         transform.transform.translation.y = msg.pose.pose.position.y
         transform.transform.translation.z = msg.pose.pose.position.z

@@ -16,7 +16,7 @@ class KeyboardControlNode(Node):
         )
         self.publisher = self.create_publisher(Twist, '/zalpiano_base_controller/cmd_vel_unstamped', qos_profile)
         self.e_stop_publisher = self.create_publisher(Twist, '/e_stop', qos_profile)  # New e-stop publisher
-        self.timer = self.create_timer(0.01, self.timer_callback)  # Timer frequency could be adjusted for responsiveness
+        self.timer = self.create_timer(0.005, self.timer_callback)  # Timer frequency could be adjusted for responsiveness
         self.get_logger().info('Keyboard Control Node has started.')
 
     def timer_callback(self):
@@ -26,19 +26,19 @@ class KeyboardControlNode(Node):
         msg = Twist()
 
         if key == ord('w'):
-            msg.linear.x = 1.0
+            msg.linear.x = 3.0
             self.publisher.publish(msg)
             self.get_logger().info(f'Published: {msg}')
         elif key == ord('s'):
-            msg.linear.x = -1.0
+            msg.linear.x = -3.0
             self.publisher.publish(msg)
             self.get_logger().info(f'Published: {msg}')
         elif key == ord('a'):
-            msg.angular.z = 1.0
+            msg.angular.z = 3.0
             self.publisher.publish(msg)
             self.get_logger().info(f'Published: {msg}')
         elif key == ord('d'):
-            msg.angular.z = -1.0
+            msg.angular.z = -3.0
             self.publisher.publish(msg)
             self.get_logger().info(f'Published: {msg}')
         elif key == ord(' '):  # Spacebar for e-stop

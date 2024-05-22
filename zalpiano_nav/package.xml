@@ -4,7 +4,7 @@
   <name>zalpiano_nav</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="john@todo.todo">john</maintainer>
+  <maintainer email="junekyoopark@gmail.com">john</maintainer>
   <license>TODO: License declaration</license>
 
   <exec_depend>rclpy</exec_depend>
