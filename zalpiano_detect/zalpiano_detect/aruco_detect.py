@@ -146,14 +146,13 @@ class ArUcoDetector(Node):
                 X, Y, Z = self.image_point_to_world(cx, cy)
 
                 # Prepare the pose message
-                pose_msg = PoseWithCovarianceStamped()
+                pose_msg = PoseStamped()
                 pose_msg.header.stamp = self.get_clock().now().to_msg()
                 pose_msg.header.frame_id = "map"
-                pose_msg.pose.pose.position.x = -X
-                pose_msg.pose.pose.position.y = -Y
-                pose_msg.pose.pose.position.z = Z
-                pose_msg.pose.pose.orientation = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)  # Neutral orientation
-                pose_msg.pose.covariance = [0.0] * 36  # Initialize covariance as zero (adjust as needed)
+                pose_msg.pose.position.x = -X
+                pose_msg.pose.position.y = -Y
+                pose_msg.pose.position.z = Z
+                pose_msg.pose.orientation = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)  # Neutral orientation
 
                 # Publish the pose
                 self.person_pose_publisher.publish(pose_msg)

@@ -4,4 +4,4 @@ origin: [-4.800000, -4.500000, 0.0]
 resolution: 0.010000
 mode: trinary
 occupied_thresh: 0.95
-image: /home/john/ros2_ws/src/map/map.pgm
+image: /home/john/ros2_ws/src/zalpiano_nav/map/map.pgm
