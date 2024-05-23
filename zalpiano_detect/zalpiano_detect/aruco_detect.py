@@ -65,6 +65,9 @@ class ArUcoDetector(Node):
 
         self.person_pose_publisher = self.create_publisher(PoseStamped, '/person_pose', 10)
 
+        self.cost_threshold = 0.1
+        self.robot_goal_publisher = self.create_publisher(PoseStamped, '/away_goal_pose', 10)
+
 
     def detect_yellow_region(self, frame):
         """
@@ -88,6 +91,30 @@ class ArUcoDetector(Node):
                 cy = int(M["m01"] / M["m00"])
                 return cx, cy, cv2.contourArea(largest_contour)
         return None
+    
+    def generate_cost_map(self, person_position, map_size, sigma=30):
+        """
+        Generate a Gaussian cost map with higher costs closer to the person.
+        """
+        x = np.arange(map_size[0])
+        y = np.arange(map_size[1])
+        x, y = np.meshgrid(x, y)
+        # Gaussian distribution where higher values (higher costs) are closer to the person
+        cost_map = np.exp(-((x - person_position[0])**2 + (y - person_position[1])**2) / (2 * sigma**2))
+        return 1 - cost_map  # Invert the costs so that higher values indicate safer (lower cost) areas
+
+    def find_closest_low_cost_goal(self, cost_map, last_goal_position, threshold=0.5):
+        """
+        Find the closest low-cost goal within the cost map, below a specified cost threshold, relative to the last goal position.
+        """
+        low_cost_indices = np.where(cost_map < threshold)
+        if len(low_cost_indices[0]) > 0:
+            distances = np.sqrt((low_cost_indices[0] - last_goal_position[1])**2 + (low_cost_indices[1] - last_goal_position[0])**2)
+            closest_index = np.argmin(distances)
+            closest_low_cost_goal = (low_cost_indices[1][closest_index], low_cost_indices[0][closest_index])
+            return closest_low_cost_goal
+        return None
+
 
     def image_point_to_world(self, x, y):
         """
@@ -143,6 +170,27 @@ class ArUcoDetector(Node):
             yellow_centroid = self.detect_yellow_region(frame)
             if yellow_centroid:
                 cx, cy, area = yellow_centroid
+
+                person_position = (cx, cy)  # Position in pixel coordinates
+                self.current_cost_map = self.generate_cost_map(person_position, (W, H))
+                if last_goal:
+                    current_cost = self.current_cost_map[last_goal[1], last_goal[0]]
+                    if current_cost > self.cost_threshold:
+                        new_goal = self.find_closest_low_cost_goal(self.current_cost_map, last_goal, self.cost_threshold)
+                        if new_goal:
+                            last_goal = new_goal  # Update last_goal with the new goal position
+                            goal_x_pixel, goal_y_pixel = new_goal
+                            goal_x_world, goal_y_world, goal_z_world = self.image_point_to_world(goal_x_pixel, goal_y_pixel)
+
+                            goal_pose_msg = PoseStamped()
+                            goal_pose_msg.header.stamp = self.get_clock().now().to_msg()
+                            goal_pose_msg.header.frame_id = "map"
+                            goal_pose_msg.pose.position.x = goal_x_world
+                            goal_pose_msg.pose.position.y = goal_y_world
+                            goal_pose_msg.pose.position.z = goal_z_world
+                            goal_pose_msg.pose.orientation = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
+                            self.robot_goal_publisher.publish(goal_pose_msg)
+
                 X, Y, Z = self.image_point_to_world(cx, cy)
 
                 # Prepare the pose message

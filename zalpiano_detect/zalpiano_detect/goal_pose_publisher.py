@@ -25,6 +25,12 @@ class GoalPosePublisher(Node):
             self.listener_callback_flag,
             10
         )
+        self.subscription_away_goal_pose = self.create_subscription(
+            PoseStamped,
+            '/away_goal_pose',
+            self.listener_callback_away_goal_pose,
+            10
+        )
         self.publisher = self.create_publisher(
             PoseStamped,
             '/goal_pose',
@@ -33,6 +39,7 @@ class GoalPosePublisher(Node):
         self.current_flag = "toward"  # Default behavior
         self.current_odometry_pose = None
         self.latest_person_pose = None
+        self.away_goal_pose = None
 
     def listener_callback_person_pose(self, msg):
         """
@@ -54,6 +61,10 @@ class GoalPosePublisher(Node):
         self.current_flag = msg.data
         self.publish_goal_pose()
 
+    def listener_callback_away_goal_pose(self,msg):
+        self.away_goal_pose = msg
+        self.publish_goal_pose()
+
     def publish_goal_pose(self):
         """
         Publishes the goal pose based on the current flag and available data.
@@ -62,28 +73,23 @@ class GoalPosePublisher(Node):
             if self.current_flag == "toward":
                 self.publisher.publish(self.latest_person_pose)
             elif self.current_flag == "away":
-                reflected_pose = self.reflect_pose(self.latest_person_pose.pose, self.current_odometry_pose)
-                goal_pose_msg = PoseStamped()
-                goal_pose_msg.header.stamp = self.get_clock().now().to_msg()
-                goal_pose_msg.header.frame_id = "map"
-                goal_pose_msg.pose = reflected_pose
-                self.publisher.publish(goal_pose_msg)
+                self.publisher.publish(self.away_goal_pose)
 
-    def reflect_pose(self, target_pose, reference_pose):
-        """
-        Reflects the target pose about the reference pose.
-        """
-        # Reflection calculation: Reflecting a point across another point in 2D
-        reflected_x = 2 * reference_pose.position.x - target_pose.position.x
-        reflected_y = 2 * reference_pose.position.y - target_pose.position.y
-        reflected_z = target_pose.position.z  # Maintain same Z
+    # def reflect_pose(self, target_pose, reference_pose):
+    #     """
+    #     Reflects the target pose about the reference pose.
+    #     """
+    #     # Reflection calculation: Reflecting a point across another point in 2D
+    #     reflected_x = 2 * reference_pose.position.x - target_pose.position.x
+    #     reflected_y = 2 * reference_pose.position.y - target_pose.position.y
+    #     reflected_z = target_pose.position.z  # Maintain same Z
 
-        # Construct the new reflected pose
-        reflected_pose = target_pose
-        reflected_pose.position.x = reflected_x
-        reflected_pose.position.y = reflected_y
-        reflected_pose.position.z = reflected_z
-        return reflected_pose
+    #     # Construct the new reflected pose
+    #     reflected_pose = target_pose
+    #     reflected_pose.position.x = reflected_x
+    #     reflected_pose.position.y = reflected_y
+    #     reflected_pose.position.z = reflected_z
+    #     return reflected_pose
 
 def main(args=None):
     rclpy.init(args=args)
