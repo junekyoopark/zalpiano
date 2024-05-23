@@ -62,6 +62,9 @@ class ArUcoDetector(Node):
         # Needed for rclpy spin
         self.timer = self.create_timer(0.01, self.process_frames)
 
+
+        self.person_pose_publisher = self.create_publisher(PoseWithCovarianceStamped, '/person_pose', 10)
+
     def image_point_to_world(self, x, y):
         """
         Convert 2D image points to 3D world coordinates with a known Z depth.
