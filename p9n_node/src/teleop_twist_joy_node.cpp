@@ -46,6 +46,11 @@ TeleopTwistJoyNode::TeleopTwistJoyNode(const rclcpp::NodeOptions & options)
     "joy", rclcpp::SensorDataQoS().keep_last(1),
     std::bind(&TeleopTwistJoyNode::onJoy, this, _1));
 
+  //addition for e_stop
+  this->e_stop_pub_ = this->create_publisher<Twist>(
+    "e_stop", rclcpp::QoS(10).reliable().durability_volatile());
+
+
   this->twist_pub_ = this->create_publisher<Twist>(
     "cmd_vel_joy", rclcpp::QoS(10).reliable().durability_volatile());
 
@@ -63,6 +68,15 @@ void TeleopTwistJoyNode::onJoy(Joy::ConstSharedPtr joy_msg)
 {
   this->timer_watchdog_->reset();
   this->p9n_if_->setJoyMsg(joy_msg);
+
+
+  //addition for e_stop
+  if (this->p9n_if_->pressedCross()) {
+    // Emergency stop
+    auto e_stop_msg = std::make_unique<Twist>(rosidl_runtime_cpp::MessageInitialization::ZERO);
+    this->e_stop_pub_->publish(std::move(e_stop_msg));
+    return; // Stop further processing since emergency stop was triggered
+  }
 
   static bool stopped = true;
   if (this->p9n_if_->isTiltedStickL()) {

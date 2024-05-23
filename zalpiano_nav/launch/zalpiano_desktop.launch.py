@@ -79,6 +79,12 @@ def generate_launch_description():
         name="joy_teleop",
     )
 
+    goal_pose_publisher_node = Node(
+        package="zalpiano_detect",
+        executable="goal_pose_publisher",
+        name="goal_pose_publisher",
+    )
+
     return LaunchDescription([
         aruco_detect_node,
         aruco_to_center_node,
@@ -87,4 +93,5 @@ def generate_launch_description():
         twist_mux_node,
         joy_node,
         joy_teleop_node,
+        goal_pose_publisher_node,
     ])

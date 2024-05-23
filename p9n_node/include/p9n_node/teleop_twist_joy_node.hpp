@@ -40,6 +40,9 @@ private:
   rclcpp::Subscription<Joy>::SharedPtr joy_sub_;
   rclcpp::Publisher<Twist>::SharedPtr twist_pub_;
 
+  // addition for e_stop
+  rclcpp::Publisher<Twist>::SharedPtr e_stop_pub_;
+
   rclcpp::TimerBase::SharedPtr timer_watchdog_;
 
 public:

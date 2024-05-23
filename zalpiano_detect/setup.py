@@ -26,6 +26,7 @@ setup(
             'aruco_detect = zalpiano_detect.aruco_detect:main',
             'aruco_to_center = zalpiano_detect.aruco_to_center:main',
             'image_publisher = zalpiano_detect.image_publisher:main',
+            'goal_pose_publisher = zalpiano_detect.goal_pose_publisher:main',
         ],
     },
 )

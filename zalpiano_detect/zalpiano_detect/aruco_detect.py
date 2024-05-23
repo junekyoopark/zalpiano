@@ -6,7 +6,7 @@ import cv2
 import cv2.aruco as aruco
 import numpy as np
 
-from geometry_msgs.msg import PoseWithCovarianceStamped  # Modified import
+from geometry_msgs.msg import PoseWithCovarianceStamped, PoseStamped  # Modified import
 from geometry_msgs.msg import Quaternion
 
 import tf2_ros
@@ -63,7 +63,31 @@ class ArUcoDetector(Node):
         self.timer = self.create_timer(0.01, self.process_frames)
 
 
-        self.person_pose_publisher = self.create_publisher(PoseWithCovarianceStamped, '/person_pose', 10)
+        self.person_pose_publisher = self.create_publisher(PoseStamped, '/person_pose', 10)
+
+
+    def detect_yellow_region(self, frame):
+        """
+        Detect the largest yellow region in the frame and return its centroid and area.
+        """
+        # Convert BGR to HSV
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+        # Define range for yellow color and threshold
+        lower_yellow = np.array([20, 100, 100])  # Lower boundary for yellow
+        upper_yellow = np.array([30, 255, 255])  # Upper boundary for yellow
+        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+
+        # Find contours
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if contours:
+            largest_contour = max(contours, key=cv2.contourArea)
+            M = cv2.moments(largest_contour)
+            if M["m00"] != 0:
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+                return cx, cy, cv2.contourArea(largest_contour)
+        return None
 
     def image_point_to_world(self, x, y):
         """
@@ -115,6 +139,28 @@ class ArUcoDetector(Node):
 
                         position_text = f"3D Pos: ({X:.2f}, {Y:.2f}, {cy:.2f})"
                         cv2.putText(frame, position_text, (int(center[0] + 20), int(center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
+            
+            yellow_centroid = self.detect_yellow_region(frame)
+            if yellow_centroid:
+                cx, cy, area = yellow_centroid
+                X, Y, Z = self.image_point_to_world(cx, cy)
+
+                # Prepare the pose message
+                pose_msg = PoseWithCovarianceStamped()
+                pose_msg.header.stamp = self.get_clock().now().to_msg()
+                pose_msg.header.frame_id = "map"
+                pose_msg.pose.pose.position.x = -X
+                pose_msg.pose.pose.position.y = -Y
+                pose_msg.pose.pose.position.z = Z
+                pose_msg.pose.pose.orientation = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)  # Neutral orientation
+                pose_msg.pose.covariance = [0.0] * 36  # Initialize covariance as zero (adjust as needed)
+
+                # Publish the pose
+                self.person_pose_publisher.publish(pose_msg)
+
+                # Optional: draw the centroid on the frame for visual feedback
+                cv2.circle(frame, (cx, cy), 5, (0, 255, 255), -1)
+
 
             cv2.imshow("ArUco Marker Detection and 3D Position", frame)
             cv2.waitKey(1) 
