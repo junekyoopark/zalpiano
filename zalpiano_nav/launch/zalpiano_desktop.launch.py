@@ -67,10 +67,24 @@ def generate_launch_description():
         remappings=[('/cmd_vel_out', '/zalpiano_base_controller/cmd_vel_unstamped')]
     )
 
+    joy_node = Node(
+        package = "joy",
+        executable="joy_node",
+        name="joy",
+    )
+
+    joy_teleop_node = Node(
+        package="p9n_node",
+        executable="teleop_twist_joy_node_exec",
+        name="joy_teleop",
+    )
+
     return LaunchDescription([
         aruco_detect_node,
         aruco_to_center_node,
         rviz_node,
         map_server_node,
         twist_mux_node,
+        joy_node,
+        joy_teleop_node,
     ])
