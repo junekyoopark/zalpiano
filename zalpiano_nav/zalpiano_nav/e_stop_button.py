@@ -9,7 +9,7 @@ class EmergencyStop(Node):
         # Subscriber for the joystick
         self.subscription = self.create_subscription(
             Joy,
-            '/joy',
+            '/joy_e_stop',
             self.joy_callback,
             10)
         self.subscription  # prevent unused variable warning

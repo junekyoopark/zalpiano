@@ -71,6 +71,9 @@ def generate_launch_description():
         package = "joy",
         executable="joy_node",
         name="joy",
+        parameters=[{
+            'device_name': "DualSense Wireless Controller",
+        }],
     )
 
     joy_teleop_node = Node(
@@ -83,6 +86,16 @@ def generate_launch_description():
         package="zalpiano_detect",
         executable="goal_pose_publisher",
         name="goal_pose_publisher",
+    )
+
+    joy_e_stop_node = Node(
+        package="joy",
+        executable="joy_node",
+        name="joy_e_stop",
+        parameters=[{
+            'device_name': "SparkFun Pro Micro",
+        }],
+        remappings=[('/joy', '/joy_e_stop')]
     )
 
     e_stop_button_node = Node(
@@ -100,5 +113,6 @@ def generate_launch_description():
         joy_node,
         joy_teleop_node,
         goal_pose_publisher_node,
+        joy_e_stop_node,
         e_stop_button_node,
     ])
