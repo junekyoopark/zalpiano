@@ -85,6 +85,12 @@ def generate_launch_description():
         name="goal_pose_publisher",
     )
 
+    e_stop_button_node = Node(
+        package="zalpiano_nav",
+        executable="e_stop_button",
+        name="e_stop_button",
+    )
+
     return LaunchDescription([
         aruco_detect_node,
         aruco_to_center_node,
@@ -94,4 +100,5 @@ def generate_launch_description():
         joy_node,
         joy_teleop_node,
         goal_pose_publisher_node,
+        e_stop_button_node,
     ])

@@ -26,6 +26,7 @@ setup(
     entry_points={
         'console_scripts': [
             'zalpiano_keyboard_control = zalpiano_nav.zalpiano_keyboard_control:main',
+            'e_stop_button = zalpiano_nav.e_stop_button:main',
         ],
     },
 )
