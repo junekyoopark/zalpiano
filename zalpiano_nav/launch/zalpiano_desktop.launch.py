@@ -33,6 +33,15 @@ def generate_launch_description():
         ]
     )
 
+    nav2_params_file = PathJoinSubstitution(
+        [
+            FindPackageShare("zalpiano_nav"),
+            "config",
+            "nav2_params.yaml"
+        ]
+    )
+    
+
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
@@ -131,7 +140,8 @@ def generate_launch_description():
     navigation_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([
             FindPackageShare('nav2_bringup'), 'launch', 'navigation_launch.py'
-        ]))
+        ])),
+        launch_arguments={'params_file': nav2_params_file}.items()
     )
 
     rviz_launch = IncludeLaunchDescription(
