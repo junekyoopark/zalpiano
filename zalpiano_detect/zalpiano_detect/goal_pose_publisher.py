@@ -36,7 +36,7 @@ class GoalPosePublisher(Node):
             '/goal_pose',
             10
         )
-        self.current_flag = "away"  # Default behavior
+        self.current_flag = "toward"  # Default behavior
         self.current_odometry_pose = None
         self.latest_person_pose = None
         self.away_goal_pose = None

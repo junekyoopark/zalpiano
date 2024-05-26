@@ -1,14 +1,10 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
 def generate_launch_description():
-    ld = LaunchDescription()
-
     map_file_path = PathJoinSubstitution(
         [
             FindPackageShare("zalpiano_nav"),
@@ -32,7 +28,6 @@ def generate_launch_description():
             "twist_mux.yaml"
         ]
     )
-
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
@@ -52,20 +47,6 @@ def generate_launch_description():
             }],
         remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')]
     )
-
-    #for lifecycle configure and activate 
-    #see https://answers.ros.org/question/398095/ros2-nav2-map_server-problems-loading-map-with-nav2_map_server/
-    lifecycle_nodes = ['map_server']
-    autostart = True
-    start_lifecycle_manager_cmd = Node(
-        package='nav2_lifecycle_manager',
-        executable='lifecycle_manager',
-        name='lifecycle_manager',
-        output='screen',
-        emulate_tty=True,  # see https://github.com/ros2/launch/issues/188
-        parameters=[{'autostart': autostart},
-                    {'node_names': lifecycle_nodes}])
-
 
     aruco_detect_node = Node(
         package="zalpiano_detect",
@@ -123,36 +104,15 @@ def generate_launch_description():
         name="e_stop_button",
     )
 
-
-
-
-
-    # Include external launch files
-    navigation_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([
-            FindPackageShare('nav2_bringup'), 'launch', 'navigation_launch.py'
-        ]))
-    )
-
-    rviz_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([
-            FindPackageShare('nav2_bringup'), 'launch', 'rviz_launch.py'
-        ]))
-    )
-
-    ld.add_action(aruco_detect_node)
-    ld.add_action(aruco_to_center_node)
-    ld.add_action(rviz_node)
-    ld.add_action(map_server_node)
-    ld.add_action(start_lifecycle_manager_cmd)
-    ld.add_action(twist_mux_node)
-    ld.add_action(joy_node)
-    ld.add_action(joy_teleop_node)
-    ld.add_action(goal_pose_publisher_node)
-    ld.add_action(joy_e_stop_node)
-    ld.add_action(e_stop_button_node)
-
-    ld.add_action(navigation_launch)
-    ld.add_action(rviz_launch)
-
-    return ld
+    return LaunchDescription([
+        aruco_detect_node,
+        aruco_to_center_node,
+        rviz_node,
+        map_server_node,
+        twist_mux_node,
+        joy_node,
+        joy_teleop_node,
+        goal_pose_publisher_node,
+        joy_e_stop_node,
+        e_stop_button_node,
+    ])
