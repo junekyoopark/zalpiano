@@ -67,6 +67,7 @@ class ArUcoDetector(Node):
 
         self.cost_threshold = 0.1
         self.robot_goal_publisher = self.create_publisher(PoseStamped, '/away_goal_pose', 10)
+        self.last_goal = (0,0) #initialize 
 
 
     def detect_yellow_region(self, frame):
@@ -173,12 +174,12 @@ class ArUcoDetector(Node):
 
                 person_position = (cx, cy)  # Position in pixel coordinates
                 self.current_cost_map = self.generate_cost_map(person_position, (W, H))
-                if last_goal:
-                    current_cost = self.current_cost_map[last_goal[1], last_goal[0]]
+                if self.last_goal:
+                    current_cost = self.current_cost_map[self.last_goal[1], self.last_goal[0]]
                     if current_cost > self.cost_threshold:
-                        new_goal = self.find_closest_low_cost_goal(self.current_cost_map, last_goal, self.cost_threshold)
+                        new_goal = self.find_closest_low_cost_goal(self.current_cost_map, self.last_goal, self.cost_threshold)
                         if new_goal:
-                            last_goal = new_goal  # Update last_goal with the new goal position
+                            self.last_goal = new_goal  # Update last_goal with the new goal position
                             goal_x_pixel, goal_y_pixel = new_goal
                             goal_x_world, goal_y_world, goal_z_world = self.image_point_to_world(goal_x_pixel, goal_y_pixel)
 
